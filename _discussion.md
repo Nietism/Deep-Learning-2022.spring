@@ -65,11 +65,11 @@
   
 + **paddle.nn 与 paddle.nn.functional**
 
-paddle.nn中大部分组件在paddle.nn.functional中都有一个对应的函数，如nn.Conv2D()和nn.functional.conv2d()。Paddle这方面与PyTorch设计一致，通过同时保留这两者保证了使用时的灵活性。 
+  paddle.nn中大部分组件在paddle.nn.functional中都有一个对应的函数，如nn.Conv2D()和nn.functional.conv2d()。Paddle这方面与PyTorch设计一致，通过同时保留这两者保证了使用时的灵活性。 
 
-参考：[PyTorch 中，nn 与 nn.functional 有什么区别？](https://www.zhihu.com/question/66782101)
+  参考：[PyTorch 中，nn 与 nn.functional 有什么区别？](https://www.zhihu.com/question/66782101)
 
-另外，使用这两者时模型的结构有一些细微的差别，可以通过一个简单的例子观察到：
+  另外，使用这两者时模型的结构有一些细微的差别，可以通过一个简单的例子观察到：
 
 ```python
 import paddle
@@ -145,12 +145,12 @@ Estimated Total Size (MB): 0.00
 """
 ```
 
-可以观察到：对于在forward中使用了nn.functional.relu()函数的net1，打印出的网络结构中只有两个线性层；而对于在模型结构定义中将nn.ReLU()定义为自身属性的net2，打印出的网络结构中则将ReLU视为网络中的一个无参的层。
+  可以观察到：对于在forward中使用了nn.functional.relu()函数的net1，打印出的网络结构中只有两个线性层；而对于在模型结构定义中将nn.ReLU()定义为自身属性的net2，打印出的网络结构中则将ReLU视为网络中的一个无参的层。
 
 + 显然，在用Sequential容器定义网络模块时，必须传入nn.Layer类型的sublayer或可迭代的nn.Layer元组。
 + **[Paddle中模型训练的若干方法](https://blog.csdn.net/lxm12914045/article/details/111505366)**
 
-以LeNet在Fashion-MNIST上为例：
+  以LeNet在Fashion-MNIST上为例：
 
 ```python
 import paddle
