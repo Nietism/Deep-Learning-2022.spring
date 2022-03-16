@@ -304,5 +304,69 @@ for batch_id, data in enumerate(test_loader()):
 ```python
 # 5
 
+val_acc_history = []
+val_loss_history = []
+
+def train(model):
+    print('start training ... ')
+    # training mode on
+    model.train()
+
+    optimizer = paddle.optimizer.Adam(parameters=model.parameters(), learning_rate=1e-3)
+    train_loader = paddle.io.DataLoader(fashionmnist_train, batch_size=128, shuffle=True)
+    test_loader = paddle.io.DataLoader(fashionmnist_test, batch_size=128, shuffle=False)
+    epochs = 3
+
+    for epoch in range(epochs):
+        for batch_id, data in enumerate(train_loader()):
+            x_data = data[0]
+            y_data = data[1]
+
+            predicts = net(x_data)
+            loss = F.cross_entropy(predicts, y_data)
+            acc = paddle.metric.accuracy(predicts, y_data)
+            loss.backward()
+            if batch_id % 200 == 0:
+                print("[train] epoch: {}, batch_id: {}, loss is: {}, acc is: {}".format(epoch, batch_id, loss.numpy(), acc.numpy()))
+            optimizer.step()
+            optimizer.clear_grad()
+
+        # evaluate model after every epoch
+        model.eval()
+        accuracies = []
+        losses = []
+        for batch_id, data in enumerate(test_loader()):
+            x_data = data[0]
+            y_data = data[1]
+
+            predicts = net(x_data)
+            loss = F.cross_entropy(predicts, y_data)
+            acc = paddle.metric.accuracy(predicts, y_data)
+            accuracies.append(acc.numpy())
+            losses.append(loss.numpy())
+
+        avg_acc, avg_loss = np.mean(accuracies), np.mean(losses)
+        print("[validation] loss is: {}, acc is: {}".format(avg_loss, avg_acc))
+        val_acc_history.append(avg_acc)
+        val_loss_history.append(avg_loss)
+        model.train()
+
+train(net)
+```
+
+```python
+start training ... 
+[train] epoch: 0, batch_id: 0, loss is: [0.38968918], acc is: [0.875]
+[train] epoch: 0, batch_id: 200, loss is: [0.4175303], acc is: [0.8828125]
+[train] epoch: 0, batch_id: 400, loss is: [0.48383802], acc is: [0.828125]
+[validation] loss is: 0.3646795451641083, acc is: 0.8670886158943176
+[train] epoch: 1, batch_id: 0, loss is: [0.2479319], acc is: [0.9140625]
+[train] epoch: 1, batch_id: 200, loss is: [0.19505194], acc is: [0.9453125]
+[train] epoch: 1, batch_id: 400, loss is: [0.33912522], acc is: [0.8984375]
+[validation] loss is: 0.3558771014213562, acc is: 0.8701542615890503
+[train] epoch: 2, batch_id: 0, loss is: [0.416911], acc is: [0.8203125]
+[train] epoch: 2, batch_id: 200, loss is: [0.277215], acc is: [0.9140625]
+[train] epoch: 2, batch_id: 400, loss is: [0.23891735], acc is: [0.90625]
+[validation] loss is: 0.35426172614097595, acc is: 0.8693631291389465
 ```
 
